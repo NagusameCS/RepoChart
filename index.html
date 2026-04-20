@@ -29,17 +29,89 @@
   <div id="landing">
     <div class="landing-content">
       <h1 class="landing-title">RepoChart</h1>
-      <p class="landing-sub">Paste a GitHub repository URL and press Enter</p>
+      <p class="landing-sub">Paste a GitHub repo URL or username and press Enter</p>
       <div class="input-wrapper">
         <input
           id="repo-input"
           type="text"
-          placeholder="https://github.com/owner/repo"
+          placeholder="https://github.com/owner/repo  or  username"
           autocomplete="off"
           spellcheck="false"
         >
       </div>
-      <p class="landing-hint">e.g. https://github.com/torvalds/linux</p>
+      <p class="landing-hint">e.g. https://github.com/torvalds/linux &nbsp;or&nbsp; torvalds</p>
+    </div>
+  </div>
+
+  <!-- ===== User View ===== -->
+  <div id="user-view" class="hidden">
+
+    <!-- Navbar -->
+    <nav class="user-navbar">
+      <div class="nav-container">
+        <a href="./" class="nav-logo">RepoChart</a>
+        <div class="nav-repo">
+          <span id="nav-username"></span>
+        </div>
+        <a id="nav-user-gh-link" href="#" target="_blank" class="btn-gh" title="Open on GitHub">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+      </div>
+    </nav>
+
+    <!-- User Loading -->
+    <div id="user-loading" class="hidden">
+      <div class="spinner"></div>
+      <p>Fetching user…</p>
+    </div>
+
+    <!-- User Error -->
+    <div id="user-error" class="hidden">
+      <p id="user-error-msg"></p>
+      <a href="./" class="btn-back">← Try again</a>
+    </div>
+
+    <!-- User Profile -->
+    <div id="user-profile" class="hidden">
+      <div class="user-card">
+        <img id="user-avatar" class="user-avatar" src="" alt="">
+        <div class="user-info">
+          <h1 id="user-display-name"></h1>
+          <p id="user-login" class="user-login"></p>
+          <p id="user-bio" class="user-bio"></p>
+          <div class="user-meta">
+            <span id="user-company" class="hidden"><svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M1.75 16A1.75 1.75 0 010 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 00.25-.25V8.285a.25.25 0 00-.111-.208l-1.055-.703a.75.75 0 11.832-1.248l1.064.71c.487.325.793.871.793 1.456v6.208A1.75 1.75 0 0114.25 16h-3.5a.75.75 0 01-.197-.026c-.099.017-.2.026-.303.026h-3a.75.75 0 01-.75-.75V14h-1v1.25a.75.75 0 01-.75.75h-3zM3 3.75A.75.75 0 013.75 3h.5a.75.75 0 010 1.5h-.5A.75.75 0 013 3.75zM3.75 6a.75.75 0 000 1.5h.5a.75.75 0 000-1.5h-.5zM3 9.75A.75.75 0 013.75 9h.5a.75.75 0 010 1.5h-.5A.75.75 0 013 9.75zM7.75 3a.75.75 0 000 1.5h.5a.75.75 0 000-1.5h-.5zM7 6.75A.75.75 0 017.75 6h.5a.75.75 0 010 1.5h-.5A.75.75 0 017 6.75zM7.75 9a.75.75 0 000 1.5h.5a.75.75 0 000-1.5h-.5z"/></svg> <span></span></span>
+            <span id="user-location" class="hidden"><svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M11.536 3.464a5 5 0 010 7.072L8 14.07l-3.536-3.535a5 5 0 117.072-7.072v.001zm-1.06 5.96a3.5 3.5 0 10-4.95-4.95 3.5 3.5 0 004.95 4.95zM8 7.5a1 1 0 100-2 1 1 0 000 2z"/></svg> <span></span></span>
+            <span id="user-blog" class="hidden"><svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/></svg> <a href="" target="_blank"></a></span>
+          </div>
+          <div class="user-counts">
+            <span><strong id="user-repos-count">0</strong> repositories</span>
+            <span><strong id="user-followers">0</strong> followers</span>
+            <span><strong id="user-following">0</strong> following</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort / Filter -->
+      <div class="repos-toolbar">
+        <div class="repos-search-wrap">
+          <input id="repos-filter" type="text" placeholder="Filter repositories…" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="repos-sort-wrap">
+          <select id="repos-sort">
+            <option value="updated">Recently updated</option>
+            <option value="stars">Most stars</option>
+            <option value="name">Name</option>
+            <option value="size">Size</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Repo list -->
+      <div id="repos-list"></div>
+      <div id="repos-load-more" class="hidden">
+        <button id="load-more-btn" class="btn-back">Load more</button>
+      </div>
     </div>
   </div>
 
@@ -88,8 +160,18 @@
       <p id="repo-description"></p>
     </div>
 
-    <!-- Tree Container -->
-    <div id="tree-container"></div>
+    <!-- Graph Container -->
+    <div id="graph-container">
+      <canvas id="graph-canvas"></canvas>
+      <div id="graph-controls">
+        <button id="zoom-in" title="Zoom in">+</button>
+        <button id="zoom-out" title="Zoom out">−</button>
+        <button id="zoom-reset" title="Reset view">⟲</button>
+      </div>
+      <div id="graph-search">
+        <input id="graph-filter" type="text" placeholder="Search files…" autocomplete="off" spellcheck="false">
+      </div>
+    </div>
   </div>
 
   <!-- ===== Tooltip ===== -->
