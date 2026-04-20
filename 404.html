@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    // GitHub Pages SPA redirect — preserves query string
+    var path = window.location.pathname;
+    var search = window.location.search;
+    var hash = window.location.hash;
+    window.location.replace(
+      window.location.origin + '/' + (path.split('/')[1] || '') + '/' + search + hash
+    );
+  </script>
+</head>
+<body></body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RepoChart — Visualize Any GitHub Repository</title>
+  <meta name="description" content="Paste a GitHub repo link and instantly visualize its entire file structure as an interactive chart.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="RepoChart — Visualize Any GitHub Repository">
+  <meta property="og:description" content="Paste a GitHub repo link and instantly visualize its entire file structure as an interactive chart.">
+  <meta property="og:url" content="https://nagusamecs.github.io/RepoChart/">
+  <meta property="og:image" content="https://nagusamecs.github.io/RepoChart/assets/og.svg">
+  <meta property="og:site_name" content="RepoChart">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RepoChart — Visualize Any GitHub Repository">
+  <meta name="twitter:description" content="Paste a GitHub repo link and instantly visualize its entire file structure as an interactive chart.">
+  <meta name="twitter:image" content="https://nagusamecs.github.io/RepoChart/assets/og.svg">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body>
+
+  <!-- ===== Landing View ===== -->
+  <div id="landing">
+    <div class="landing-content">
+      <h1 class="landing-title">RepoChart</h1>
+      <p class="landing-sub">Paste a GitHub repository URL and press Enter</p>
+      <div class="input-wrapper">
+        <input
+          id="repo-input"
+          type="text"
+          placeholder="https://github.com/owner/repo"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      <p class="landing-hint">e.g. https://github.com/torvalds/linux</p>
+    </div>
+  </div>
+
+  <!-- ===== Chart View ===== -->
+  <div id="chart-view" class="hidden">
+
+    <!-- Navbar -->
+    <nav id="navbar">
+      <div class="nav-container">
+        <a href="./" class="nav-logo">RepoChart</a>
+        <div class="nav-repo">
+          <span id="nav-owner"></span>
+          <span class="nav-sep">/</span>
+          <span id="nav-repo-name"></span>
+        </div>
+        <a id="nav-gh-link" href="#" target="_blank" class="btn-gh" title="Open on GitHub">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <p>Fetching repository…</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-view" class="hidden">
+      <p id="error-msg"></p>
+      <a href="./" class="btn-back">← Try another repo</a>
+    </div>
+
+    <!-- Repo Stats Banner (shown when hovering root or always visible at top) -->
+    <div id="repo-stats" class="hidden">
+      <div class="stats-grid">
+        <div class="stat"><span class="stat-value" id="stat-stars">—</span><span class="stat-label">Stars</span></div>
+        <div class="stat"><span class="stat-value" id="stat-forks">—</span><span class="stat-label">Forks</span></div>
+        <div class="stat"><span class="stat-value" id="stat-size">—</span><span class="stat-label">Size</span></div>
+        <div class="stat"><span class="stat-value" id="stat-files">—</span><span class="stat-label">Files</span></div>
+        <div class="stat"><span class="stat-value" id="stat-lang">—</span><span class="stat-label">Language</span></div>
+        <div class="stat"><span class="stat-value" id="stat-license">—</span><span class="stat-label">License</span></div>
+        <div class="stat"><span class="stat-value" id="stat-issues">—</span><span class="stat-label">Issues</span></div>
+        <div class="stat"><span class="stat-value" id="stat-updated">—</span><span class="stat-label">Updated</span></div>
+      </div>
+      <p id="repo-description"></p>
+    </div>
+
+    <!-- Tree Container -->
+    <div id="tree-container"></div>
+  </div>
+
+  <!-- ===== Tooltip ===== -->
+  <div id="tooltip" class="hidden">
+    <div class="tooltip-name"></div>
+    <div class="tooltip-stats"></div>
+  </div>
+
+  <!-- ===== File Preview Modal ===== -->
+  <div id="preview-overlay" class="hidden">
+    <div id="preview-modal">
+      <div class="preview-header">
+        <span id="preview-path"></span>
+        <button id="preview-close">&times;</button>
+      </div>
+      <div id="preview-body">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
